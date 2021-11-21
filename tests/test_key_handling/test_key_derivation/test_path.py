@@ -26,7 +26,8 @@ with open(test_vector_filefolder, 'r') as f:
 )
 def test_flip_bits_256(test_vector) -> None:
     test_vector_int = int(test_vector['seed'][:64], 16)  # 64 comes from string chars containing .5 bytes
-    assert test_vector_int & _flip_bits_256(test_vector_int) == 0
+    if test_vector_int & _flip_bits_256(test_vector_int) != 0:
+        raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -41,8 +42,10 @@ def test_IKM_to_lamport_SK(test_vector) -> None:
     lamport_0 = _IKM_to_lamport_SK(IKM=IKM, salt=salt)
     not_IKM = _flip_bits_256(test_vector['master_SK']).to_bytes(32, 'big')
     lamport_1 = _IKM_to_lamport_SK(IKM=not_IKM, salt=salt)
-    assert test_vector_lamport_0 == lamport_0
-    assert test_vector_lamport_1 == lamport_1
+    if test_vector_lamport_0 != lamport_0:
+        raise AssertionError
+    if test_vector_lamport_1 != lamport_1:
+        raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -53,7 +56,8 @@ def test_parent_SK_to_lamport_PK(test_vector) -> None:
     parent_SK = test_vector['master_SK']
     index = test_vector['child_index']
     lamport_PK = bytes.fromhex(test_vector['compressed_lamport_PK'])
-    assert lamport_PK == _parent_SK_to_lamport_PK(parent_SK=parent_SK, index=index)
+    if lamport_PK != _parent_SK_to_lamport_PK(parent_SK=parent_SK, index=index):
+        raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -64,7 +68,8 @@ def test_HKDF_mod_r(test_vector) -> None:
     test_0 = (bytes.fromhex(test_vector['seed']), test_vector['master_SK'])
     test_1 = (bytes.fromhex(test_vector['compressed_lamport_PK']), test_vector['child_SK'])
     for test in (test_0, test_1):
-        assert _HKDF_mod_r(IKM=test[0]) == test[1]
+        if _HKDF_mod_r(IKM=test[0]) != test[1]:
+            raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -76,7 +81,8 @@ def test_mnemonic_and_path_to_key(test_vector) -> None:
     password = test_vector['password']
     path = test_vector['path']
     key = test_vector['child_SK']
-    assert mnemonic_and_path_to_key(mnemonic=mnemonic, path=path, password=password) == key
+    if mnemonic_and_path_to_key(mnemonic=mnemonic, path=path, password=password) != key:
+        raise AssertionError
 
 
 @pytest.mark.parametrize(

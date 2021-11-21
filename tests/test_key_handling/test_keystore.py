@@ -20,7 +20,8 @@ def test_json_serialization() -> None:
     for keystore, keystore_json_file in zip(test_vector_keystores, test_vector_files):
         keystore_json_path = os.path.join(test_vector_folder, keystore_json_file)
         with open(keystore_json_path) as f:
-            assert json.loads(keystore.as_json()) == json.load(f)
+            if json.loads(keystore.as_json()) != json.load(f):
+                raise AssertionError
 
 
 def test_encrypt_decrypt_test_vectors() -> None:
@@ -33,7 +34,8 @@ def test_encrypt_decrypt_test_vectors() -> None:
             password=test_vector_password,
             aes_iv=aes_iv,
             kdf_salt=kdf_salt)
-        assert generated_keystore.decrypt(test_vector_password) == test_vector_secret
+        if generated_keystore.decrypt(test_vector_password) != test_vector_secret:
+            raise AssertionError
 
 
 def test_generated_keystores() -> None:
@@ -46,17 +48,20 @@ def test_generated_keystores() -> None:
             password=test_vector_password,
             aes_iv=aes_iv,
             kdf_salt=kdf_salt)
-        assert generated_keystore.crypto == tv.crypto
+        if generated_keystore.crypto != tv.crypto:
+            raise AssertionError
 
 
 def test_encrypt_decrypt_pbkdf2_random_iv() -> None:
     generated_keystore = Pbkdf2Keystore.encrypt(secret=test_vector_secret, password=test_vector_password)
-    assert generated_keystore.decrypt(test_vector_password) == test_vector_secret
+    if generated_keystore.decrypt(test_vector_password) != test_vector_secret:
+        raise AssertionError
 
 
 def test_encrypt_decrypt_scrypt_random_iv() -> None:
     generated_keystore = ScryptKeystore.encrypt(secret=test_vector_secret, password=test_vector_password)
-    assert generated_keystore.decrypt(test_vector_password) == test_vector_secret
+    if generated_keystore.decrypt(test_vector_password) != test_vector_secret:
+        raise AssertionError
 
 
 def test_encrypt_decrypt_incorrect_password() -> None:
@@ -74,4 +79,5 @@ def test_encrypt_decrypt_incorrect_password() -> None:
     ]
 )
 def test_process_password(password: str, processed_password: bytes) -> None:
-    assert Keystore._process_password(password) == processed_password
+    if Keystore._process_password(password) != processed_password:
+        raise AssertionError
