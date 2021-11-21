@@ -23,7 +23,8 @@ with open(test_vector_filefolder, 'r') as f:
 )
 def test_hkdf_mod_r(test) -> None:
     seed = bytes.fromhex(test['seed'])
-    assert bls.KeyGen(seed) == _HKDF_mod_r(IKM=seed)
+    if bls.KeyGen(seed) != _HKDF_mod_r(IKM=seed):
+        raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -35,7 +36,8 @@ def test_hkdf_mod_r(test) -> None:
     [b'\x00' * 32, b'\x01\x23\x45\x67\x89\xAB\xBC\xDE\xFF', b'\xFF' * 16]
 )
 def test_hkdf_mod_r_key_info(seed: bytes, key_info: bytes) -> None:
-    assert bls.KeyGen(seed, key_info) == _HKDF_mod_r(IKM=seed, key_info=key_info)
+    if bls.KeyGen(seed, key_info) != _HKDF_mod_r(IKM=seed, key_info=key_info):
+        raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -50,7 +52,8 @@ def test_derive_master_SK(test, is_valid_seed) -> None:
     master_SK = test['master_SK']
     if is_valid_seed:
         seed = bytes.fromhex(test['seed'])
-        assert derive_master_SK(seed=seed) == master_SK
+        if derive_master_SK(seed=seed) != master_SK:
+            raise AssertionError
     else:
         seed = "\x12" * 31
         with pytest.raises(ValueError):
@@ -70,7 +73,8 @@ def test_derive_child_SK_valid(test, is_valid_index) -> None:
     child_SK = test['child_SK']
     if is_valid_index:
         index = test['child_index']
-        assert derive_child_SK(parent_SK=parent_SK, index=index) == child_SK
+        if derive_child_SK(parent_SK=parent_SK, index=index) != child_SK:
+            raise AssertionError
     else:
         index = 2**32
         with pytest.raises(IndexError):
