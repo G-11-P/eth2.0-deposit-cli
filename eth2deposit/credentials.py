@@ -79,17 +79,15 @@ class Credential:
     def withdrawal_prefix(self) -> bytes:
         if self.eth1_withdrawal_address is not None:
             return ETH1_ADDRESS_WITHDRAWAL_PREFIX
-        else:
-            return BLS_WITHDRAWAL_PREFIX
+        return BLS_WITHDRAWAL_PREFIX
 
     @property
     def withdrawal_type(self) -> WithdrawalType:
         if self.withdrawal_prefix == BLS_WITHDRAWAL_PREFIX:
             return WithdrawalType.BLS_WITHDRAWAL
-        elif self.withdrawal_prefix == ETH1_ADDRESS_WITHDRAWAL_PREFIX:
+        if self.withdrawal_prefix == ETH1_ADDRESS_WITHDRAWAL_PREFIX:
             return WithdrawalType.ETH1_ADDRESS_WITHDRAWAL
-        else:
-            raise ValueError(f"Invalid withdrawal_prefix {self.withdrawal_prefix.hex()}")
+        raise ValueError(f"Invalid withdrawal_prefix {self.withdrawal_prefix.hex()}")
 
     @property
     def withdrawal_credentials(self) -> bytes:
