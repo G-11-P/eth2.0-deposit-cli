@@ -30,7 +30,8 @@ def test_new_mnemonic_bls_withdrawal(monkeypatch) -> None:
     inputs = ['english', '1', 'mainnet', 'MyPassword', 'MyPassword', 'fakephrase']
     data = '\n'.join(inputs)
     result = runner.invoke(cli, ['new-mnemonic', '--folder', my_folder_path], input=data)
-    assert result.exit_code == 0
+    if result.exit_code != 0:
+        raise AssertionError
 
     # Check files
     validator_keys_folder_path = os.path.join(my_folder_path, DEFAULT_VALIDATOR_KEYS_FOLDER_NAME)
@@ -41,12 +42,14 @@ def test_new_mnemonic_bls_withdrawal(monkeypatch) -> None:
         for key_file in key_files
         if key_file.startswith('keystore')
     ]
-    assert len(set(all_uuid)) == 1
+    if len(set(all_uuid)) != 1:
+        raise AssertionError
 
     # Verify file permissions
     if os.name == 'posix':
         for file_name in key_files:
-            assert get_permissions(validator_keys_folder_path, file_name) == '0o440'
+            if get_permissions(validator_keys_folder_path, file_name) != '0o440':
+                raise AssertionError
 
     # Clean up
     clean_key_folder(my_folder_path)
@@ -75,7 +78,8 @@ def test_new_mnemonic_eth1_address_withdrawal(monkeypatch) -> None:
         '--eth1_withdrawal_address', eth1_withdrawal_address,
     ]
     result = runner.invoke(cli, arguments, input=data)
-    assert result.exit_code == 0
+    if result.exit_code != 0:
+        raise AssertionError
 
     # Check files
     validator_keys_folder_path = os.path.join(my_folder_path, DEFAULT_VALIDATOR_KEYS_FOLDER_NAME)
@@ -86,21 +90,24 @@ def test_new_mnemonic_eth1_address_withdrawal(monkeypatch) -> None:
         deposits_dict = json.load(f)
     for deposit in deposits_dict:
         withdrawal_credentials = bytes.fromhex(deposit['withdrawal_credentials'])
-        assert withdrawal_credentials == (
+        if withdrawal_credentials != (
             ETH1_ADDRESS_WITHDRAWAL_PREFIX + b'\x00' * 11 + decode_hex(eth1_withdrawal_address)
-        )
+        ):
+            raise AssertionError
 
     all_uuid = [
         get_uuid(validator_keys_folder_path + '/' + key_file)
         for key_file in key_files
         if key_file.startswith('keystore')
     ]
-    assert len(set(all_uuid)) == 1
+    if len(set(all_uuid)) != 1:
+        raise AssertionError
 
     # Verify file permissions
     if os.name == 'posix':
         for file_name in key_files:
-            assert get_permissions(validator_keys_folder_path, file_name) == '0o440'
+            if get_permissions(validator_keys_folder_path, file_name) != '0o440':
+                raise AssertionError
 
     # Clean up
     clean_key_folder(my_folder_path)
@@ -152,7 +159,8 @@ async def test_script() -> None:
                 proc.stdin.write(encoded_phrase)
                 proc.stdin.write(b'\n')
 
-    assert len(seed_phrase) > 0
+    if len(seed_phrase) <= 0:
+        raise AssertionError
 
     # Check files
     validator_keys_folder_path = os.path.join(my_folder_path, DEFAULT_VALIDATOR_KEYS_FOLDER_NAME)
@@ -163,12 +171,14 @@ async def test_script() -> None:
         for key_file in key_files
         if key_file.startswith('keystore')
     ]
-    assert len(set(all_uuid)) == 5
+    if len(set(all_uuid)) != 5:
+        raise AssertionError
 
     # Verify file permissions
     if os.name == 'posix':
         for file_name in key_files:
-            assert get_permissions(validator_keys_folder_path, file_name) == '0o440'
+            if get_permissions(validator_keys_folder_path, file_name) != '0o440':
+                raise AssertionError
 
     # Clean up
     clean_key_folder(my_folder_path)
