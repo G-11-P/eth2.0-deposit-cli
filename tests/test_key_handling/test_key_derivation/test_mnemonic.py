@@ -33,8 +33,10 @@ def test_bip39(language: str, test: Sequence[str]) -> None:
     test_mnemonic = test[1]
     test_seed = bytes.fromhex(test[2])
 
-    assert get_mnemonic(language=language, words_path=WORD_LISTS_PATH, entropy=test_entropy) == test_mnemonic
-    assert get_seed(mnemonic=test_mnemonic, password='TREZOR') == test_seed
+    if get_mnemonic(language=language, words_path=WORD_LISTS_PATH, entropy=test_entropy) != test_mnemonic:
+        raise AssertionError
+    if get_seed(mnemonic=test_mnemonic, password='TREZOR') != test_seed:
+        raise AssertionError
 
 
 @pytest.mark.parametrize(
@@ -44,7 +46,8 @@ def test_bip39(language: str, test: Sequence[str]) -> None:
      for test_mnemonic in language_test_vectors]
 )
 def test_verify_mnemonic(test_mnemonic: str, is_valid: bool) -> None:
-    assert verify_mnemonic(test_mnemonic, WORD_LISTS_PATH) == is_valid
+    if verify_mnemonic(test_mnemonic, WORD_LISTS_PATH) != is_valid:
+        raise AssertionError
 
 
 @pytest.mark.parametrize(

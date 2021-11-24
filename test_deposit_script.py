@@ -57,7 +57,8 @@ async def main():
         output = out.decode('utf-8').rstrip()
         print(f'[stderr] {output}')
 
-    assert len(seed_phrase) > 0
+    if len(seed_phrase) <= 0:
+        raise AssertionError
 
     # Check files
     validator_keys_folder_path = os.path.join(my_folder_path, DEFAULT_VALIDATOR_KEYS_FOLDER_NAME)

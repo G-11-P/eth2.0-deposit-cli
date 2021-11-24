@@ -18,7 +18,8 @@ from eth2deposit.utils.ssz import (
 )
 def test_compute_deposit_domain(fork_version, valid, result):
     if valid:
-        assert compute_deposit_domain(fork_version) == result
+        if compute_deposit_domain(fork_version) != result:
+            raise AssertionError
     else:
         with pytest.raises(ValueError):
             compute_deposit_domain(fork_version)
@@ -34,7 +35,8 @@ def test_compute_deposit_domain(fork_version, valid, result):
 )
 def test_compute_deposit_fork_data_root(current_version, valid, result):
     if valid:
-        assert compute_deposit_fork_data_root(current_version=current_version) == result
+        if compute_deposit_fork_data_root(current_version=current_version) != result:
+            raise AssertionError
     else:
         with pytest.raises(ValueError):
             compute_deposit_fork_data_root(current_version=current_version)
@@ -55,7 +57,8 @@ def test_compute_signing_root(domain, valid, result):
         amount=100,
     )
     if valid:
-        assert compute_signing_root(deposit_message, domain) == result
+        if compute_signing_root(deposit_message, domain) != result:
+            raise AssertionError
     else:
         with pytest.raises(ValueError):
             compute_signing_root(deposit_message, domain)
