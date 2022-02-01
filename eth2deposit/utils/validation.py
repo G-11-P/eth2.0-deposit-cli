@@ -35,7 +35,7 @@ def verify_deposit_data_json(filefolder: str, credentials: Sequence[Credential])
         deposit_json = json.load(f)
         with click.progressbar(deposit_json, label='Verifying your deposits:\t',
                                show_percent=False, show_pos=True) as deposits:
-            return all([validate_deposit(deposit, credential) for deposit, credential in zip(deposits, credentials)])
+            return all(validate_deposit(deposit, credential) for deposit, credential in zip(deposits, credentials))
     return False
 
 
