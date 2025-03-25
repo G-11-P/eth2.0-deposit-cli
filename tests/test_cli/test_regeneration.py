@@ -36,7 +36,8 @@ def test_regeneration(monkeypatch) -> None:
     inputs = ['english', '2', 'mainnet', my_password, my_password, mock_mnemonic]
     data = '\n'.join(inputs)
     result = runner.invoke(cli, ['new-mnemonic', '--folder', folder_path_1], input=data)
-    assert result.exit_code == 0
+    if result.exit_code != 0:
+        raise AssertionError
 
     # Check files
     validator_keys_folder_path_1 = os.path.join(folder_path_1, DEFAULT_VALIDATOR_KEYS_FOLDER_NAME)
@@ -45,12 +46,14 @@ def test_regeneration(monkeypatch) -> None:
 
     all_uuid = [get_uuid(validator_keys_folder_path_1 + '/' + key_file)
                 for key_file in part_1_key_files]
-    assert len(set(all_uuid)) == 2
+    if len(set(all_uuid)) != 2:
+        raise AssertionError
 
     # Verify file permissions
     if os.name == 'posix':
         for file_name in part_1_key_files:
-            assert get_permissions(validator_keys_folder_path_1, file_name) == '0o440'
+            if get_permissions(validator_keys_folder_path_1, file_name) != '0o440':
+                raise AssertionError
 
     # Part 2: existing-mnemonic
     runner = CliRunner()
@@ -62,7 +65,8 @@ def test_regeneration(monkeypatch) -> None:
     arguments = ['existing-mnemonic', '--folder', folder_path_2]
     result = runner.invoke(cli, arguments, input=data)
 
-    assert result.exit_code == 0
+    if result.exit_code != 0:
+        raise AssertionError
 
     # Check files
     validator_keys_folder_path_2 = os.path.join(folder_path_2, DEFAULT_VALIDATOR_KEYS_FOLDER_NAME)
@@ -71,22 +75,27 @@ def test_regeneration(monkeypatch) -> None:
 
     all_uuid = [get_uuid(validator_keys_folder_path_2 + '/' + key_file)
                 for key_file in part_2_key_files]
-    assert len(set(all_uuid)) == 2
+    if len(set(all_uuid)) != 2:
+        raise AssertionError
 
     # Finally:
     # Check the index=1 files have the same pubkey
-    assert '1_0_0' in part_1_key_files[1] and '1_0_0' in part_2_key_files[0]
+    if not ('1_0_0' in part_1_key_files[1] and '1_0_0' in part_2_key_files[0]):
+        raise AssertionError
     with open(Path(validator_keys_folder_path_1 + '/' + part_1_key_files[1])) as f:
         keystore_1_1 = json.load(f)
     with open(Path(validator_keys_folder_path_2 + '/' + part_2_key_files[0])) as f:
         keystore_2_0 = json.load(f)
-    assert keystore_1_1['pubkey'] == keystore_2_0['pubkey']
-    assert keystore_1_1['path'] == keystore_2_0['path']
+    if keystore_1_1['pubkey'] != keystore_2_0['pubkey']:
+        raise AssertionError
+    if keystore_1_1['path'] != keystore_2_0['path']:
+        raise AssertionError
 
     # Verify file permissions
     if os.name == 'posix':
         for file_name in part_2_key_files:
-            assert get_permissions(validator_keys_folder_path_2, file_name) == '0o440'
+            if get_permissions(validator_keys_folder_path_2, file_name) != '0o440':
+                raise AssertionError
 
     # Clean up
     clean_key_folder(folder_path_1)
