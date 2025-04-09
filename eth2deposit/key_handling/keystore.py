@@ -31,7 +31,7 @@ def encode_bytes(obj: Union[str, Dict[str, Any]]) -> Union[bytes, str, Dict[str,
     """
     if isinstance(obj, str) and all(c in hexdigits for c in obj):
         return bytes.fromhex(obj)
-    elif isinstance(obj, dict):
+    if isinstance(obj, dict):
         for key, value in obj.items():
             obj[key] = encode_bytes(value)
     return obj
