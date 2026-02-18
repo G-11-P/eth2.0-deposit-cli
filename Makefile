@@ -1,9 +1,18 @@
+# ⚠️ DEPRECATED: This repository has been deprecated and is no longer maintained.
+# Please use the actively maintained fork at https://github.com/ethstaker/ethstaker-deposit-cli
+
 VENV_NAME?=venv
 VENV_ACTIVATE=. $(VENV_NAME)/bin/activate
-PYTHON=${VENV_NAME}/bin/python3.8
-DOCKER_IMAGE="ethereum/eth2.0-deposit-cli:latest"
+PYTHON=${VENV_NAME}/bin/python3.12
+DOCKER_IMAGE="ethereum/staking-deposit-cli:latest"
 
 help:
+	@echo ""
+	@echo "================================================================================"
+	@echo "⚠️  This repository has been DEPRECATED"
+	@echo "    Please use: https://github.com/ethstaker/ethstaker-deposit-cli"
+	@echo "================================================================================"
+	@echo ""
 	@echo "clean - remove build and Python file artifacts"
 	# Run with venv
 	@echo "venv_deposit - run deposit cli with venv"
@@ -24,9 +33,9 @@ clean:
 
 $(VENV_NAME)/bin/activate: requirements.txt
 	@test -d $(VENV_NAME) || python3 -m venv --clear $(VENV_NAME)
-	${VENV_NAME}/bin/python setup.py install
 	${VENV_NAME}/bin/python -m pip install -r requirements.txt
 	${VENV_NAME}/bin/python -m pip install -r requirements_test.txt
+	${VENV_NAME}/bin/python setup.py install
 	@touch $(VENV_NAME)/bin/activate
 
 venv_build: $(VENV_NAME)/bin/activate
@@ -35,13 +44,13 @@ venv_build_test: venv_build
 	${VENV_NAME}/bin/python -m pip install -r requirements_test.txt
 
 venv_test: venv_build_test
-	$(VENV_ACTIVATE) && python -m pytest .
+	$(VENV_ACTIVATE) && python -m pytest ./tests
 
 venv_lint: venv_build_test
-	$(VENV_ACTIVATE) && flake8 --config=flake8.ini ./eth2deposit ./tests && mypy --config-file mypy.ini -p eth2deposit
+	$(VENV_ACTIVATE) && flake8 --config=flake8.ini ./staking_deposit ./tests && mypy --config-file mypy.ini -p staking_deposit
 
 venv_deposit: venv_build
-	$(VENV_ACTIVATE) && python ./eth2deposit/deposit.py $(filter-out $@,$(MAKECMDGOALS))
+	$(VENV_ACTIVATE) && python ./staking_deposit/deposit.py $(filter-out $@,$(MAKECMDGOALS))
 
 build_macos: venv_build
 	${VENV_NAME}/bin/python -m pip install -r ./build_configs/macos/requirements.txt
