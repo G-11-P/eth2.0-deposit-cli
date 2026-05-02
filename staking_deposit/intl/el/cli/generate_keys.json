@@ -18,7 +18,7 @@
     "generate_keys": {
         "msg_key_creation": "Δημιουργώντας τα κλειδιά σας.",
         "msg_creation_success": "\nΕπιτυχία!\nΤα κλειδιά σας μπορούν να βρεθούν στο: ",
-        "msg_validators_generated": "Validators generated and verified: %s to %s",
+        "msg_validators_generated": "Επαληθευτές για τους οποίους δημιουργήθηκαν και επαληθεύτηκαν κλειδιά: %s έως %s",
         "msg_pause": "\n\nΠιέστε οποιοδήποτε πλήκτρο.",
         "err_verify_keystores": "Αποτυχία επαλήθευσης των χώρων αποθήκευσης των κλειδιών.",
         "err_verify_deposit": "Αποτυχία επαλήθευσης των αρχείων JSON δεδομένων κατάθεσης."

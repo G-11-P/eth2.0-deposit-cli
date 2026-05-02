@@ -24,7 +24,7 @@
     "generate_keys": {
         "msg_key_creation": "Anahtarlarınız oluşturuluyor.",
         "msg_creation_success": "\nBaşarılı!\nAnahtarlarınızı burada bulabilirsiniz: ",
-        "msg_validators_generated": "Validators generated and verified: %s to %s",
+        "msg_validators_generated": "Oluşturulan ve doğrulanan doğrulayıcılar: %s ile %s",
         "msg_pause": "\n\nHerhangi bir tuşa basın.",
         "err_verify_keystores": "Anahtar depoları doğrulanamadı.",
         "err_verify_deposit": "Depozito JSON dosyaları doğrulanamadı."

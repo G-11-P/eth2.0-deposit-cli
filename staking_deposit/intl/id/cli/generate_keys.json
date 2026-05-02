@@ -18,7 +18,7 @@
     "generate_keys": {
         "msg_key_creation": "Membuat kunci Anda.",
         "msg_creation_success": "\nSukses!\nKunci Anda dapat ditemukan di: ",
-        "msg_validators_generated": "Validators generated and verified: %s to %s",
+        "msg_validators_generated": "Validator yang kuncinya telah dibuat dan diverifikasi: %s hingga %s",
         "msg_pause": "\n\nTekan tombol apa saja.",
         "err_verify_keystores": "Gagal memverifikasi keystore.",
         "err_verify_deposit": "Gagal memverifikasi data setoran file JSON."

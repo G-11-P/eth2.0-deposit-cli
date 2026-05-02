@@ -18,7 +18,7 @@
     "generate_keys": {
         "msg_key_creation": "キーを作成しています。",
         "msg_creation_success": "\n成功しました！\nあなたのキーは次の場所で見つけることができます：",
-        "msg_validators_generated": "Validators generated and verified: %s to %s",
+        "msg_validators_generated": "鍵が生成および検証されたバリデーター：%s から %s",
         "msg_pause": "\n任意のキーを押してください。",
         "err_verify_keystores": "キーストアの確認に失敗しました。",
         "err_verify_deposit": "入金データ JSON ファイルの確認に失敗しました。"
